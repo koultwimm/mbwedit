@@ -5,6 +5,10 @@ blocksShortcut.forEach((blocksShortcut, index) => {
 	textures[blocksShortcut] = { x: 0, y: index * 16 };
 });
 
+textures.wr.x = 96;
+textures.la.x = 64;
+textures.ad.x = 64;
+
 const renderers = {
 	default: function (states) {
 		return getTexture(states.type);
@@ -12,7 +16,7 @@ const renderers = {
 	incrase: function (states) {
 		const state = states.states1;
 		const texture = getTexture(states.type);
-		if (typeof state === "number") {
+		if (isNumber(state)) {
 			texture.x += (state - 1) * 16;
 		}
 		return texture;
@@ -20,7 +24,7 @@ const renderers = {
 	container: function (states) {
 		const state = states.states1;
 		const texture = getTexture(states.type);
-		if (typeof state === "number") {
+		if (isNumber(state)) {
 			texture.x += state * 16;
 		}
 		return texture;
@@ -58,11 +62,13 @@ const renderers = {
 		return texture;
 	},
 	brewingStand: function (states) {
-		const output = states.toBrew.output;
 		const texture = getTexture(states.type);
-		for (let i = 0; i < 3; i++) {
-			if (mbwom.isEmptyItem(output[i])) {
-				texture.x += 16;
+		const toBrew = states.toBrew;
+		if (toBrew != null) {
+			for (let i = 0; i < 3; i++) {
+				if (mbwom.isEmptyItem(toBrew.output[i])) {
+					texture.x += 16;
+				}
 			}
 		}
 		return texture;
@@ -73,7 +79,28 @@ const renderers = {
 			texture.x += 16;
 		}
 		return texture;
-	}
+	},
+	liquid: function (states) {
+		const texture = getTexture(states.type);
+		const water = states.water;
+		if (water != null) {
+			if (water[0] > water[1]) {
+				texture.x += (9 - water[1]) * 16
+			}
+			if (water[0] < water[1]) {
+				texture.x -= (9 - water[0]) * 16
+			}
+		}
+		return texture;
+	},
+	wheat: function (states) {
+		const texture = getTexture(states.type);
+		const wheat = states.wheat;
+		if (isNumber(wheat)) {
+			texture.x += (wheat - 1) * 16;
+		}
+		return texture;
+	},
 }
 
 const blockData = {
@@ -133,15 +160,21 @@ const blockData = {
 	bdcloth: renderers.wool,
 	bed1: renderers.wool,
 	bed2: renderers.wool,
+	carpet: renderers.wool,
 	gs: renderers.glass,
 	bdgs: renderers.glass,
 	dt: renderers.dirt,
 	oven: renderers.furnace,
 	cmp: renderers.container,
 	cauldron: renderers.container,
+	fice: renderers.container,
 	brew: renderers.brewingStand,
 	fncg: renderers.boolean,
 	nfncg: renderers.boolean,
+	wr: renderers.liquid,
+	la: renderers.liquid,
+	ad: renderers.liquid,
+ seed: renderers.wheat,
 }
 
 const colorIndex = {
@@ -162,4 +195,8 @@ const colorIndex = {
 	lightblue: 224,
 	blue: 240,
 	rainbow: 256
+}
+
+function isNumber (a) {
+	return typeof a === "number";
 }

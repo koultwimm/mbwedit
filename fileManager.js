@@ -4,12 +4,12 @@ const fileManager = {
   try {
    const jsonString = mbw.decode(event.target.result);
    mbwom.world = JSON.parse(jsonString);
-   mbwom.loadScene(1);
-   initializeWorldCache();
-   mainLoop();
   } catch (error) {
    console.log("Couldn't load world file", error)
   }
+  mbwom.loadScene(1);
+  initializeWorldCache();
+  mainLoop();
  }
 }
 
