@@ -1,8 +1,10 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+ctx.imageSmoothingEnabled = false;
+
 canvas.width = 960;
-canvas.height = 470;
+canvas.height = 480;
 
 const tileset = new Image;
 tileset.src = "blocks.png";
@@ -89,8 +91,8 @@ function mainLoop() {
  cameraMovement();
  drawWorld();
  ctx.fillStyle = "#000";
- ctx.font = "20px arial";
- ctx.fillText(`X: ${mouse.blockX} Y: ${mouse.blockY}`, 10, 25);
+ ctx.font = "16px Monospace";
+ ctx.fillText(`X: ${mouse.blockX} Y: ${mouse.blockY}`, 10, 20);
  requestAnimationFrame(mainLoop);
 }
 

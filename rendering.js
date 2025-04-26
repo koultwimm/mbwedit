@@ -45,7 +45,7 @@ const renderers = {
 		const state = states.states1;
 		const texture = getTexture(states.type);
 		if (state == 1) {
-			texture.x += 16; 
+			texture.x += 16;
 		}
 		return texture;
 	},
@@ -53,6 +53,23 @@ const renderers = {
 		const fuelTimer = states.toSmelt.fuelTimer;
 		const texture = getTexture(states.type);
 		if (fuelTimer > 0) {
+			texture.x += 16;
+		}
+		return texture;
+	},
+	brewingStand: function (states) {
+		const output = states.toBrew.output;
+		const texture = getTexture(states.type);
+		for (let i = 0; i < 3; i++) {
+			if (mbwom.isEmptyItem(output[i])) {
+				texture.x += 16;
+			}
+		}
+		return texture;
+	},
+	boolean: function (states) {
+		const texture = getTexture(states.type);
+		if (states.states1 == true) {
 			texture.x += 16;
 		}
 		return texture;
@@ -122,6 +139,9 @@ const blockData = {
 	oven: renderers.furnace,
 	cmp: renderers.container,
 	cauldron: renderers.container,
+	brew: renderers.brewingStand,
+	fncg: renderers.boolean,
+	nfncg: renderers.boolean,
 }
 
 const colorIndex = {
@@ -142,4 +162,4 @@ const colorIndex = {
 	lightblue: 224,
 	blue: 240,
 	rainbow: 256
-};
+}

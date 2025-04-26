@@ -89,4 +89,13 @@ const mbwom = {
   }
   return state;
  },
+ isEmptyItem: function(item) {
+  if (item == null) return true;
+  if (item[0] == null) return true;
+  if (item[0] === "") return true;
+  if (item[0] === "air") return true;
+  if (item[0] === "na") return true;
+  if (item[1] < 1) return true;
+  return false;
+ },
 }
