@@ -3,6 +3,10 @@ const keys = {
 	s: false,
 	d: false,
 	a: false,
+	e: false,
+	1: false,
+	2: false,
+	3: false
 }
 
 const mouse = {
@@ -18,6 +22,33 @@ function handleKeyDown(event) {
 	if (key in keys) {
 		event.preventDefault();
 		keys[key] = true;
+		if (key == 3) {
+			selectedTool = "Eyedropper";
+		}
+		if (key == 2) {
+			selectedTool = "Eraser";
+		}
+		if (key == 1) {
+			selectedTool = "Brush";
+		}
+		if (key == "e") {
+			if (!tpToggle) {
+				lastPosition[0].x = camera.x;
+				lastPosition[0].y = camera.y;
+				if (!firstTime) {
+					camera.x = lastPosition[1].x;
+					camera.y = lastPosition[1].y;
+				}
+				tpToggle = true;
+			} else {
+				lastPosition[1].x = camera.x;
+				lastPosition[1].y = camera.y;
+				camera.x = lastPosition[0].x;
+				camera.y = lastPosition[0].y;
+				tpToggle = false;
+				firstTime = false;
+			}
+		}
 	}
 }
 
@@ -36,7 +67,9 @@ function handleMouseMove(event) {
 
 function handleMouseDown(event) {
 	mouse.holding = true;
-	console.log(mbwom.getBlockState(mouse.blockX, mouse.blockY))
+	if (selectedTool == "Eyedropper" && mbwom.world) {
+		eyedropper(mouse.blockX, mouse.blockY);
+	}
 }
 
 function handleMouseUp(event) {
@@ -44,11 +77,20 @@ function handleMouseUp(event) {
 }
 
 function cameraMovement() {
- if (keys.w) camera.y += camera.speed;
- if (keys.s) camera.y -= camera.speed;
- if (keys.d) camera.x += camera.speed;
- if (keys.a) camera.x -= camera.speed;
+	if (keys.w) camera.y += camera.speed;
+	if (keys.s) camera.y -= camera.speed;
+	if (keys.d) camera.x += camera.speed;
+	if (keys.a) camera.x -= camera.speed;
 }
+
+let tpToggle = false;
+
+let firstTime = true;
+
+let lastPosition = [
+	{},
+	{}
+]
 
 window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);

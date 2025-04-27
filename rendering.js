@@ -16,7 +16,7 @@ const renderers = {
 	incrase: function (states) {
 		const state = states.states1;
 		const texture = getTexture(states.type);
-		if (isNumber(state)) {
+		if (areNumbers([state])) {
 			texture.x += (state - 1) * 16;
 		}
 		return texture;
@@ -24,7 +24,7 @@ const renderers = {
 	container: function (states) {
 		const state = states.states1;
 		const texture = getTexture(states.type);
-		if (isNumber(state)) {
+		if (areNumbers([state])) {
 			texture.x += state * 16;
 		}
 		return texture;
@@ -96,7 +96,7 @@ const renderers = {
 	wheat: function (states) {
 		const texture = getTexture(states.type);
 		const wheat = states.wheat;
-		if (isNumber(wheat)) {
+		if (areNumbers([wheat])) {
 			texture.x += (wheat - 1) * 16;
 		}
 		return texture;
@@ -195,8 +195,4 @@ const colorIndex = {
 	lightblue: 224,
 	blue: 240,
 	rainbow: 256
-}
-
-function isNumber (a) {
-	return typeof a === "number";
 }

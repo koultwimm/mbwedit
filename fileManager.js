@@ -10,6 +10,21 @@ const fileManager = {
   mbwom.loadScene(1);
   initializeWorldCache();
   mainLoop();
+ },
+ export: function () {
+  if (mbwom.world) {
+   const jsonString = JSON.stringify(mbwom.world);
+   const text = mbw.encode(jsonString);
+   const blob = new Blob([text], { type: "text/plain" });
+   const url = URL.createObjectURL(blob);
+   const a = document.createElement("a");
+   a.href = url;
+   a.download = this.file.name;
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+   URL.revokeObjectURL(url);
+  }
  }
 }
 

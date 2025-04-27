@@ -29,7 +29,7 @@ const mbw = {
   var encodedString = "";
   for (var a = 0, b = string.length; a < b;) {
    var c = a++;
-   var characterCode = string.charCodeAt(c) - (c * 5 % 33 + 1);
+   var characterCode = string.charCodeAt(c) + (c * 5 % 33 + 1);
    encodedString += String.fromCodePoint(characterCode);
   }
   return encodedString;
@@ -52,6 +52,8 @@ function renderBlock(x, y) {
  if (block != null) {
   const renderer = blockData[block] || renderers.default;
   worldCache[x][y] = renderer(states);
+ } else {
+  delete worldCache[x][y]
  }
 }
 
@@ -61,7 +63,7 @@ function drawBlock(object, x, y, width, height) {
 
 function getTexture(block) {
  const texture = textures[block] || textures.missing;
- return {...texture};
+ return { ...texture };
 }
 
 function drawWorld() {
@@ -89,10 +91,28 @@ function mainLoop() {
  ctx.fillStyle = "#778fa5";
  ctx.fillRect(0, 0, canvas.width, canvas.height);
  cameraMovement();
+ if (mouse.holding) {
+  if (selectedTool == "Eraser") {
+   eraser(mouse.blockX, mouse.blockY);
+  }
+  if (selectedTool == "Brush") {
+   brush(mouse.blockX, mouse.blockY);
+  }
+ }
  drawWorld();
  ctx.fillStyle = "#000";
  ctx.font = "16px Monospace";
  ctx.fillText(`X: ${mouse.blockX} Y: ${mouse.blockY}`, 10, 20);
+ ctx.fillText(`Tool: ${selectedTool}`, 10, 40);
+ ctx.fillText(`Block:`, 10, 60);
+ drawBlock({x: 0, y: 3232}, Math.floor(mouse.x / tileSize) * tileSize, canvas.height - Math.floor(mouse.y / tileSize) * tileSize, tileSize, -tileSize);
+ const states = blockSelected;
+ const block = states.type;
+ if (block != null) {
+  const renderer = blockData[block] || renderers.default;
+  const blockObject = renderer(states);
+  drawBlock(blockObject, 70, 48, 16, 16);
+ }
  requestAnimationFrame(mainLoop);
 }
 
@@ -100,4 +120,9 @@ document.getElementById("dimensionSelect").addEventListener("change", function (
  const sceneIndex = parseInt(this.value, 10);
  mbwom.loadScene(sceneIndex);
  initializeWorldCache();
+});
+
+const sizeInput = document.getElementById("size-input");
+sizeInput.addEventListener("input", () => {
+ selectedShape = shapes[sizeInput.value];
 });

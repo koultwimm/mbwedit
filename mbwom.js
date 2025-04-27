@@ -55,20 +55,22 @@ const mbwom = {
   "zombiepigmanNum",
   "squidNum"
  ],
- loadScene: function (number) {
+ loadScene: function (index) {
   for (let i = 0; i < this.sceneList.length; i++) {
    const element = this.sceneList[i];
-   this[element] = this.world[element + number];
+   this[element] = this.world[element + index];
   }
- },
- saveScene: function (number) {
-  this.world["scene" + number] = this.scene;
-  this.world["states" + number] = this.states;
  },
  getBlock: function (x, y) {
   if (this.scene[x]) {
    return this.scene[x][y];
   }
+ },
+ setBlock: function (x, y, id) {
+  if (!this.scene[x]) {
+   this.scene[x] = [];
+  }
+  this.scene[x][y] = id;
  },
  getBlockState: function (x, y) {
   const id = `blockX${x}Y${y}`;
@@ -89,6 +91,22 @@ const mbwom = {
   }
   return state;
  },
+ setBlockState: function (x, y, newState) {
+  const id = `blockX${x}Y${y}`;
+  this.setBlock(x, y, newState.type);
+  this.states[id] = newState.states1;
+  this.states[id + "_2"] = newState.states2;
+  this.states[id + "_3"] = newState.states3;
+  this.firstTimes[id] = newState.firstTimes;
+  this.chests[id] = newState.chests;
+  this.toSmelt[id] = newState.toSmelt;
+  this.toGrow[id] = newState.toGrow;
+  this.water[id] = newState.water;
+  this.wheat[id] = newState.wheat;
+  this.toBrew[id] = newState.toBrew;
+  this.signs[id] = newState.signs;
+  this.hasSignal[id] = newState.hasSignal;
+},
  isEmptyItem: function(item) {
   if (item == null) return true;
   if (item[0] == null) return true;
