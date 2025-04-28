@@ -1,19 +1,30 @@
-let selectedTool = "Brush";
+let slots = [
+ {
+  type: "cs",
+ },
+ {
+  type: "r",
+ }
+]
 
-let blockSelected = {
- type: "cs",
+function swapSlots() {
+ let temp = slots[0];
+ slots[0] = slots[1];
+ slots[1] = temp;
 }
 
+let shapeIndex = 0;
+
 function eyedropper(x, y) {
- blockSelected = structuredClone(mbwom.getBlockState(x, y));
+ slots[0] = structuredClone(mbwom.getBlockState(x, y));
 }
 
 function eraser(x, y) {
- setShape(x, y, selectedShape, { type: null });
+ setShape(x, y, shapes[shapeIndex], { type: null });
 }
 
 function brush(x, y) {
- setShape(x, y, selectedShape, blockSelected);
+ setShape(x, y, shapes[shapeIndex], slots[0]);
 }
 
 function setShape(x, y, shape, state) {
@@ -53,5 +64,3 @@ const shapes = [
   [0, 1, 1]
  ]
 ]
-
-let selectedShape = shapes[0];

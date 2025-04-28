@@ -47,6 +47,9 @@ function initializeWorldCache() {
 }
 
 function renderBlock(x, y) {
+ if (!worldCache[x]) {
+  worldCache[x] = []
+ }
  const states = mbwom.getBlockState(x, y);
  const block = states.type;
  if (block != null) {
@@ -86,32 +89,37 @@ function getBlockObject(x, y) {
 }
 
 function mainLoop() {
- mouse.blockX = camera.x + Math.floor(mouse.x / tileSize);
- mouse.blockY = camera.y + Math.floor(mouse.y / tileSize);
+ mouse.calculateCoordinates();
+ cameraMovement();
+ if (mouse.right) {
+  brush(mouse.worldX, mouse.worldY);
+ }
+ if (mouse.left) {
+  eraser(mouse.worldX, mouse.worldY);
+ }
  ctx.fillStyle = "#778fa5";
  ctx.fillRect(0, 0, canvas.width, canvas.height);
- cameraMovement();
- if (mouse.holding) {
-  if (selectedTool == "Eraser") {
-   eraser(mouse.blockX, mouse.blockY);
-  }
-  if (selectedTool == "Brush") {
-   brush(mouse.blockX, mouse.blockY);
-  }
- }
  drawWorld();
  ctx.fillStyle = "#000";
  ctx.font = "16px Monospace";
- ctx.fillText(`X: ${mouse.blockX} Y: ${mouse.blockY}`, 10, 20);
- ctx.fillText(`Tool: ${selectedTool}`, 10, 40);
- ctx.fillText(`Block:`, 10, 60);
- drawBlock({x: 0, y: 3232}, Math.floor(mouse.x / tileSize) * tileSize, canvas.height - Math.floor(mouse.y / tileSize) * tileSize, tileSize, -tileSize);
- const states = blockSelected;
- const block = states.type;
+ ctx.fillText(`X: ${mouse.worldX} Y: ${mouse.worldY}`, 10, 20);
+ ctx.fillText(`Size: ${shapeIndex}`, 10, 40);
+ ctx.fillText(`Slot 0:`, 10, 60);
+ ctx.fillText(`Slot 1:`, 10, 80);
+ drawBlock({ x: 0, y: 3232 }, mouse.blockX * tileSize, canvas.height - mouse.blockY * tileSize, tileSize, -tileSize);
+ let states = slots[0];;
+ let block = states.type;
  if (block != null) {
   const renderer = blockData[block] || renderers.default;
   const blockObject = renderer(states);
-  drawBlock(blockObject, 70, 48, 16, 16);
+  drawBlock(blockObject, 80, 48, 16, 16);
+ }
+ states = slots[1];
+ block = states.type;
+ if (block != null) {
+  const renderer = blockData[block] || renderers.default;
+  const blockObject = renderer(states);
+  drawBlock(blockObject, 80, 68, 16, 16);
  }
  requestAnimationFrame(mainLoop);
 }
@@ -120,9 +128,4 @@ document.getElementById("dimensionSelect").addEventListener("change", function (
  const sceneIndex = parseInt(this.value, 10);
  mbwom.loadScene(sceneIndex);
  initializeWorldCache();
-});
-
-const sizeInput = document.getElementById("size-input");
-sizeInput.addEventListener("input", () => {
- selectedShape = shapes[sizeInput.value];
 });

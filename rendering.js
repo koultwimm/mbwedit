@@ -156,6 +156,8 @@ const blockData = {
 	hay: renderers.incrase,
 	pk: renderers.incrase,
 	wd: renderers.incrase,
+	cake: renderers.incrase,
+	ccake: renderers.incrase,
 	cloth: renderers.wool,
 	bdcloth: renderers.wool,
 	bed1: renderers.wool,
