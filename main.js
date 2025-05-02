@@ -1,6 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+
 ctx.imageSmoothingEnabled = false;
 
 canvas.width = 960;
@@ -8,6 +9,16 @@ canvas.height = 480;
 
 const tileset = new Image;
 tileset.src = "blocks.png";
+
+const hotbarImage = new Image;
+hotbarImage.src = "hotbar.png";
+hotbarOffset = {
+ x: canvas.width / 2 - 94,
+ y: canvas.height - 44,
+}
+
+const slot = new Image;
+slot.src = "inventory_single.png";
 
 const grid = { width: 60, height: 30 }
 
@@ -51,17 +62,15 @@ function renderBlock(x, y) {
   worldCache[x] = []
  }
  const states = mbwom.getBlockState(x, y);
- const block = states.type;
- if (block != null) {
-  const renderer = blockData[block] || renderers.default;
-  worldCache[x][y] = renderer(states);
+ if (states.type != null) {
+  worldCache[x][y] = getBlockObject(states);
  } else {
   delete worldCache[x][y]
  }
 }
 
-function drawBlock(object, x, y, width, height) {
- ctx.drawImage(tileset, object.x, object.y, 16, 16, x, y, width, height);
+function drawBlock(texture, values) {
+ ctx.drawImage(tileset, texture.x, texture.y, 16, 16, values.x, values.y, values.width, values.height);
 }
 
 function getTexture(block) {
@@ -74,58 +83,73 @@ function drawWorld() {
   for (let y = 0; y < grid.height; y++) {
    const currentX = x + camera.x;
    const currentY = y + camera.y;
-   const blockObject = getBlockObject(currentX, currentY);
+   const blockObject = getBlockCache(currentX, currentY);
    if (blockObject != null) {
-    drawBlock(blockObject, x * tileSize, canvas.height - y * tileSize, tileSize, -tileSize)
+    const values = {
+     x: x * tileSize,
+     y: canvas.height - y * tileSize,
+     width: tileSize,
+     height: -tileSize,
+    }
+    drawBlock(blockObject, values);
    }
   }
  }
 }
 
-function getBlockObject(x, y) {
+function getBlockCache(x, y) {
  if (worldCache[x]) {
   return worldCache[x][y];
  }
 }
 
+function getBlockObject(states) {
+ const renderer = blockData[states.type] || renderers.default;
+ return renderer(states);
+}
+
+function fillRect(x, y, width, height, color) {
+ ctx.fillStyle = color;
+ ctx.fillRect(x, y, canvas.width, canvas.height);
+}
+
+function fillText(string, x, y, font, size, color) {
+ ctx.fillStyle = color;
+ ctx.font = `${size}px ${font}`;
+ ctx.fillText(string, x, y);
+}
+
+function drawBackgrond() {
+ fillRect(0, 0, canvas.width, canvas.height, "#778fa5");
+ ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawUI() {
+ fillText(`X: ${mouse.worldX} Y: ${mouse.worldY}`, 10, 20, "Monospace", 16, "#000");
+ fillText(`Tool size: ${shapeIndex}`, 10, 40, "Monospace", 16, "#000");
+ drawBlock(
+  { x: 0, y: 3232 },
+  { x: mouse.alignedX, y: mouse.alignedY, width: tileSize, height: -tileSize }
+ );
+}
+
 function mainLoop() {
  mouse.calculateCoordinates();
  cameraMovement();
- if (mouse.right) {
-  brush(mouse.worldX, mouse.worldY);
- }
- if (mouse.left) {
-  eraser(mouse.worldX, mouse.worldY);
- }
- ctx.fillStyle = "#778fa5";
- ctx.fillRect(0, 0, canvas.width, canvas.height);
+ mineAndPlace();
+ drawBackgrond();
  drawWorld();
- ctx.fillStyle = "#000";
- ctx.font = "16px Monospace";
- ctx.fillText(`X: ${mouse.worldX} Y: ${mouse.worldY}`, 10, 20);
- ctx.fillText(`Size: ${shapeIndex}`, 10, 40);
- ctx.fillText(`Slot 0:`, 10, 60);
- ctx.fillText(`Slot 1:`, 10, 80);
- drawBlock({ x: 0, y: 3232 }, mouse.blockX * tileSize, canvas.height - mouse.blockY * tileSize, tileSize, -tileSize);
- let states = slots[0];;
- let block = states.type;
- if (block != null) {
-  const renderer = blockData[block] || renderers.default;
-  const blockObject = renderer(states);
-  drawBlock(blockObject, 80, 48, 16, 16);
- }
- states = slots[1];
- block = states.type;
- if (block != null) {
-  const renderer = blockData[block] || renderers.default;
-  const blockObject = renderer(states);
-  drawBlock(blockObject, 80, 68, 16, 16);
- }
+ drawUI();
+ drawHotbar();
  requestAnimationFrame(mainLoop);
 }
 
 document.getElementById("dimensionSelect").addEventListener("change", function () {
- const sceneIndex = parseInt(this.value, 10);
- mbwom.loadScene(sceneIndex);
- initializeWorldCache();
+ if (mbwom.world) {
+  const sceneIndex = parseInt(this.value);
+  if (mbwom.world["scene" + sceneIndex]) {
+   mbwom.loadScene(sceneIndex);
+   initializeWorldCache();
+  }
+ }
 });

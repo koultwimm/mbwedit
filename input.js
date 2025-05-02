@@ -4,60 +4,37 @@ const keys = {
 	KeyS: false,
 	KeyD: false,
 	KeyC: false,
-	ShiftLeft: false,
 	Tab: false,
 	KeyQ: false,
-	KeyE: false
-}
+	KeyE: false,
+	Digit1: false,
+	Digit2: false,
+	Digit3: false,
+	Digit4: false,
+	Digit5: false,
+	Digit6: false,
+	Digit7: false,
+	Digit8: false,
+	Digit9: false
+};
 
 const mouse = {
-	x: null,
-	y: null,
-	blockX: null,
-	blockY: null,
+	canvasX: null,
+	canvasY: null,
+	gridX: null,
+	gridY: null,
+	alignedX: null,
+	alignedY: null,
 	worldX: null,
 	worldY: null,
 	right: false,
 	left: false,
 	calculateCoordinates: function () {
-		this.blockX = Math.floor(this.x / tileSize);
-		this.blockY = Math.floor(this.y / tileSize);
-		this.worldX = camera.x + this.blockX;
-		this.worldY = camera.y + this.blockY;
+		this.alignedX = this.gridX * tileSize;
+		this.alignedY = canvas.height - this.gridY * tileSize;
+		this.worldX = camera.x + this.gridX;
+		this.worldY = camera.y + this.gridY;
 	}
-}
-
-function handleKeyDown(event) {
-	const key = event.key.toLowerCase();
-	if (key in keys) {
-		event.preventDefault();
-		keys[key] = true;
-		if (key == 3) {
-			selectedTool = "Eyedropper";
-		}
-		if (key == 2) {
-			selectedTool = "Eraser";
-		}
-		if (key == 1) {
-			selectedTool = "Brush";
-		}
-	}
-}
-
-function handleMouseMove(event) {
-	mouse.x = event.offsetX;
-	mouse.y = canvas.height - event.offsetY;
-}
-
-function handleMouseDown(event) {
-	mouse.holding = true;
-	if (selectedTool == "Eyedropper" && mbwom.world) {
-		eyedropper(mouse.blockX, mouse.blockY);
-	}
-}
-
-function handleMouseUp(event) {
-	mouse.holding = false;
 }
 
 function cameraMovement() {
@@ -98,22 +75,32 @@ let lastPosition = [
 window.addEventListener("keydown", function (event) {
 	if (keys.hasOwnProperty(event.code)) {
 		keys[event.code] = true;
+
 		if (keys.Tab) {
 			teleportSwitch();
 			event.preventDefault();
 		}
+
 		if (keys.KeyC) {
 			eyedropper(mouse.worldX, mouse.worldY);
 		}
+
 		if (keys.KeyQ) {
-			shapeIndex = (shapeIndex - 1 + 4) % 4;
+			shapeIndex = (shapeIndex - 1 + 7) % 7;
 		}
+
 		if (keys.KeyE) {
-			shapeIndex = (shapeIndex + 1) % 4;
+			shapeIndex = (shapeIndex + 1) % 7;
 		}
-		if (keys.ShiftLeft) {
-			swapSlots();
-		}
+		if (keys.Digit1) slotIndex = 0;
+		if (keys.Digit2) slotIndex = 1;
+		if (keys.Digit3) slotIndex = 2;
+		if (keys.Digit4) slotIndex = 3;
+		if (keys.Digit5) slotIndex = 4;
+		if (keys.Digit6) slotIndex = 5;
+		if (keys.Digit7) slotIndex = 6;
+		if (keys.Digit8) slotIndex = 7;
+		if (keys.Digit9) slotIndex = 8;
 	}
 });
 
@@ -123,10 +110,12 @@ window.addEventListener("keyup", function (event) {
 	}
 });
 
-canvas.addEventListener("mousemove", function handleMouseMove(event) {
-	mouse.x = event.offsetX;
-	mouse.y = canvas.height - event.offsetY;
-});
+canvas.addEventListener("mousemove", (event) => {
+	mouse.canvasX = event.offsetX;
+	mouse.canvasY = canvas.height - event.offsetY;
+	mouse.gridX = Math.floor(mouse.canvasX / tileSize);
+	mouse.gridY = Math.floor(mouse.canvasY / tileSize);
+})
 
 canvas.addEventListener("mousedown", function (event) {
 	if (event.button == 0) {

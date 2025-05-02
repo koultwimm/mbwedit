@@ -1,22 +1,52 @@
-let slots = [
- {
-  type: "cs",
- },
- {
-  type: "r",
- }
-]
-
-function swapSlots() {
- let temp = slots[0];
- slots[0] = slots[1];
- slots[1] = temp;
-}
-
 let shapeIndex = 0;
 
+let slotIndex = 0;
+
+const hotbar = [
+ {
+  type: "db",
+ },
+ {
+  type: "gb",
+ },
+ {
+  type: "ib",
+ },
+ {
+  type: "clb",
+ },
+ {
+  type: "tob",
+ },
+ {
+  type: "lapb",
+ },
+ {
+  type: "j",
+ },
+ {
+  type: "fire",
+ },
+ {
+  type: "b",
+ },
+]
+
+function drawHotbar() {
+ let x = hotbarOffset.x + 3;
+ ctx.drawImage(hotbarImage, hotbarOffset.x, hotbarOffset.y);
+ ctx.drawImage(slot, hotbarOffset.x + 20 * slotIndex, hotbarOffset.y);
+ hotbar.forEach((states, index) => {
+  drawBlock(
+   getBlockObject(states),
+   {x: (x + index * 20), y: hotbarOffset.y + 3, width: 16, height: 16}
+  );
+ });
+}
+
 function eyedropper(x, y) {
- slots[0] = structuredClone(mbwom.getBlockState(x, y));
+ const states = structuredClone(mbwom.getBlockState(x, y));
+ if (states.type != null) hotbar[slotIndex] = states;
 }
 
 function eraser(x, y) {
@@ -24,7 +54,7 @@ function eraser(x, y) {
 }
 
 function brush(x, y) {
- setShape(x, y, shapes[shapeIndex], slots[0]);
+ setShape(x, y, shapes[shapeIndex], hotbar[slotIndex]);
 }
 
 function setShape(x, y, shape, state) {
@@ -37,10 +67,21 @@ function setShape(x, y, shape, state) {
    if (value != 0) {
     const currentX = centerX + i;
     const currentY = centerY + j;
-    mbwom.setBlockState(currentX, currentY, state);
-    renderBlock(currentX, currentY);
+    if (currentX > -1 && currentY > -1) {
+     mbwom.setBlockState(currentX, currentY, state);
+     renderBlock(currentX, currentY);
+    }
    }
   }
+ }
+}
+
+function mineAndPlace() {
+ if (mouse.right) {
+  brush(mouse.worldX, mouse.worldY);
+ }
+ if (mouse.left) {
+  eraser(mouse.worldX, mouse.worldY);
  }
 }
 
@@ -62,5 +103,39 @@ const shapes = [
   [1, 1, 1, 1],
   [1, 1, 1, 1],
   [0, 1, 1]
- ]
+ ],
+ [
+  [0, 1, 1, 1],
+  [1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1],
+  [0, 1, 1, 1]
+ ],
+ [
+  [0, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1]
+ ],
+ [
+  [0, 0, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1, 1],
+  [0, 0, 1, 1, 1]
+ ],
+ [
+  [0, 0, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1, 1],
+  [0, 0, 1, 1, 1]
+ ],
 ]
+
