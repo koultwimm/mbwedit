@@ -19,6 +19,6 @@ Mine Blocks world editor tool designed to make it easier to modify `.mbw` files.
 - Additional tiles: Contributed by **WSDguy2014**, along with the test world `1.31.2 All block tiles test.mbw`
 - Logo (favicon.ico): Created by **~𝙉𝙖𝙯**
 
-## 📄 License
+## License
 
 The code is free to use. However **the artwork is not mine**, all visual assets belong to their respective creators.

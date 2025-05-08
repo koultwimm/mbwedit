@@ -2,59 +2,85 @@ let shapeIndex = 0;
 
 let slotIndex = 0;
 
-const hotbar = [
- {
-  type: "db",
+let selecting = false;
+
+
+const hotbar = {
+ offset: {
+  x: canvas.width / 2 - 94,
+  y: canvas.height - 44,
  },
- {
-  type: "gb",
- },
- {
-  type: "ib",
- },
- {
-  type: "clb",
- },
- {
-  type: "tob",
- },
- {
-  type: "lapb",
- },
- {
-  type: "j",
- },
- {
-  type: "fire",
- },
- {
-  type: "b",
- },
-]
+ slots: [
+  {
+   type: "db"
+  },
+  {
+   type: "gb"
+  },
+  {
+   type: "ib"
+  },
+  {
+   type: "clb"
+  },
+  {
+   type: "tob"
+  },
+  {
+   type: "lapb"
+  },
+  {
+   type: "j"
+  },
+  {
+   type: "fire"
+  },
+  {
+   type: "b"
+  }
+ ]
+}
 
 function drawHotbar() {
- let x = hotbarOffset.x + 3;
- ctx.drawImage(hotbarImage, hotbarOffset.x, hotbarOffset.y);
- ctx.drawImage(slot, hotbarOffset.x + 20 * slotIndex, hotbarOffset.y);
- hotbar.forEach((states, index) => {
+ let x = hotbar.offset.x + 3;
+ ctx.drawImage(images.hotbar, hotbar.offset.x, hotbar.offset.y);
+ ctx.drawImage(images.slot, hotbar.offset.x + 20 * slotIndex, hotbar.offset.y);
+ hotbar.slots.forEach((states, index) => {
   drawBlock(
    getBlockObject(states),
-   {x: (x + index * 20), y: hotbarOffset.y + 3, width: 16, height: 16}
+   { x: (x + index * 20), y: hotbar.offset.y + 3, width: 16, height: 16 }
   );
  });
 }
 
 function eyedropper(x, y) {
  const states = structuredClone(mbwom.getBlockState(x, y));
- if (states.type != null) hotbar[slotIndex] = states;
+ if (states.type != null) hotbar.slots[slotIndex] = states;
 }
 
 function eraser(x, y) {
- setShape(x, y, shapes[shapeIndex], { type: null });
+ const shape = shapes[shapeIndex];
+ const offset = Math.floor(shape.length / 2);
+ const centerX = x - offset;
+ const centerY = y - offset;
+ mbwom.traverseShape(centerX, centerY, shape, (i, j) => {
+  if (mbwom.scene[i]) {
+   delete mbwom.scene[i][j];
+   renderBlock(i, j);
+  }
+ });
 }
 
 function brush(x, y) {
- setShape(x, y, shapes[shapeIndex], hotbar[slotIndex]);
+ const shape = shapes[shapeIndex];
+ const offset = Math.floor(shape.length / 2);
+ const centerX = x - offset;
+ const centerY = y - offset;
+ mbwom.traverseShape(centerX, centerY, shape, (i, j) => {
+  const state = hotbar.slots[slotIndex]
+  mbwom.setBlockState(i, j, state);
+  renderBlock(i, j);
+ });
 }
 
 function setShape(x, y, shape, state) {

@@ -1,56 +1,35 @@
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-
-ctx.imageSmoothingEnabled = false;
-
 canvas.width = 960;
 canvas.height = 480;
 
-const tileset = new Image;
-tileset.src = "blocks.png";
+const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
 
-const hotbarImage = new Image;
-hotbarImage.src = "hotbar.png";
-hotbarOffset = {
- x: canvas.width / 2 - 94,
- y: canvas.height - 44,
+const images = {
+ names: [
+  "blocks",
+  "hotbar",
+  "slot"
+ ]
 }
 
-const slot = new Image;
-slot.src = "inventory_single.png";
+images.names.forEach((name) => {
+ images[name] = new Image;
+ images[name].src = `assets/${name}.png`;
+});
 
-const grid = { width: 60, height: 30 }
+const grid = {
+ width: 60,
+ height: 30
+}
 
-const tileSize = canvas.width / grid.width;
+let tileSize = canvas.width / grid.width;
 
 const camera = { x: 0, y: 148, speed: 1 }
-
-const mbw = {
- decode: function (string) {
-  var decodedString = "";
-  for (var a = 0, b = string.length; a < b;) {
-   var c = a++;
-   var characterCode = string.charCodeAt(c) - (c * 5 % 33 + 1);
-   decodedString += String.fromCodePoint(characterCode);
-  }
-  return decodedString;
- },
- encode: function (string) {
-  var encodedString = "";
-  for (var a = 0, b = string.length; a < b;) {
-   var c = a++;
-   var characterCode = string.charCodeAt(c) + (c * 5 % 33 + 1);
-   encodedString += String.fromCodePoint(characterCode);
-  }
-  return encodedString;
- }
-}
 
 function initializeWorldCache() {
  window.worldCache = [];
  for (let x = 0; x < mbwom.scene.length; x++) {
-  worldCache[x] = [];
   for (let y = 0; y < mbwom.scene[x].length; y++) {
    renderBlock(x, y);
   }
@@ -58,9 +37,7 @@ function initializeWorldCache() {
 }
 
 function renderBlock(x, y) {
- if (!worldCache[x]) {
-  worldCache[x] = []
- }
+ if (!worldCache[x]) worldCache[x] = [];
  const states = mbwom.getBlockState(x, y);
  if (states.type != null) {
   worldCache[x][y] = getBlockObject(states);
@@ -70,12 +47,7 @@ function renderBlock(x, y) {
 }
 
 function drawBlock(texture, values) {
- ctx.drawImage(tileset, texture.x, texture.y, 16, 16, values.x, values.y, values.width, values.height);
-}
-
-function getTexture(block) {
- const texture = textures[block] || textures.missing;
- return { ...texture };
+ ctx.drawImage(images.blocks, texture.x, texture.y, 16, 16, values.x, values.y, values.width, values.height);
 }
 
 function drawWorld() {
@@ -144,7 +116,7 @@ function mainLoop() {
  requestAnimationFrame(mainLoop);
 }
 
-document.getElementById("dimensionSelect").addEventListener("change", function () {
+document.getElementById("dimension").addEventListener("change", function () {
  if (mbwom.world) {
   const sceneIndex = parseInt(this.value);
   if (mbwom.world["scene" + sceneIndex]) {

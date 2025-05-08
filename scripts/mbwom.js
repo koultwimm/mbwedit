@@ -118,4 +118,23 @@ const mbwom = {
 		if (item[1] < 1) return true;
 		return false;
 	},
+	traverseShape: function (x, y, shape, handler) {
+		for (let i = 0; i < shape.length; i++) {
+			for (let j = 0; j < shape[i].length; j++) {
+				if (shape[i][j] === 1) {
+					const currentX = x + i;
+					const currentY = y + j;
+					if (currentX >= 0 && currentY >= 0) {
+						handler(currentX, currentY);
+					}
+				}
+			}
+		}
+	},
+	setAchievement: function (boolean, index) {
+		this.world.achieve[index] = boolean ? 1 : null;
+	},
+	getAchievement: function (index) {
+		return this.world.achieve[index] === 1;
+	}
 }

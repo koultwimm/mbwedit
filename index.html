@@ -11,20 +11,82 @@
 
 <body>
  <canvas id="canvas"></canvas><br>
- <select id="dimensionSelect">
+ <select id="dimension">
   <option value="1">Overworld</option>
   <option value="2">Nether</option>
   <option value="3">End</option>
  </select>
  <input type="file" id="file-input" accept=".mbw">
  <button onclick="fileManager.export()">Export</button><br>
- <script src="utils.js"></script>
- <script src="mbwom.js"></script>
- <script src="input.js"></script>
- <script src="tools.js"></script>
- <script src="fileManager.js"></script>
- <script src="rendering.js"></script>
+ <label>Gamemode:</label>
+ <select id="gamemode">
+  <option value="0">Survival</option>
+  <option value="1">Creative</option>
+  <option value="2">Adventure</option>
+  <option value="3">Spectator</option>
+ </select><br>
+ <label>Cheats<input type="checkbox" id="cheats"></label><br>
+ <label>Hardcore<input type="checkbox" id="hardcore"></label>
+ <div id="achievements">
+  <h2>Achievements</h2>
+  <label><input type="checkbox"> Mine a block of wood</label><br>
+  <label><input type="checkbox"> Place a block</label><br>
+  <label><input type="checkbox"> Open the inventory</label><br>
+  <label><input type="checkbox"> Craft a crafting table</label><br>
+  <label><input type="checkbox"> Craft a wooden pickaxe</label><br>
+  <label><input type="checkbox"> Craft a stone pickaxe</label><br>
+  <label><input type="checkbox"> Craft an iron pickaxe</label><br>
+  <label><input type="checkbox"> Make a furnace</label><br>
+  <label><input type="checkbox"> Make an iron ingot</label><br>
+  <label><input type="checkbox"> Make some torches</label><br>
+  <label><input type="checkbox"> Grow a tree</label><br>
+  <label><input type="checkbox"> Tame a dog</label><br>
+  <label><input type="checkbox"> Slay a pig</label><br>
+  <label><input type="checkbox"> Slay a cow</label><br>
+  <label><input type="checkbox"> Slay a sheep</label><br>
+  <label><input type="checkbox"> Slay a zombie</label><br>
+  <label><input type="checkbox"> Slay a skeleton</label><br>
+  <label><input type="checkbox"> Slay a spider</label><br>
+  <label><input type="checkbox"> Slay a nethereye</label><br>
+  <label><input type="checkbox"> Slay a blaze</label><br>
+  <label><input type="checkbox"> Slay an enderman</label><br>
+  <label><input type="checkbox"> Slay a creeper</label><br>
+  <label><input type="checkbox"> Defeat a flaming chicken</label><br>
+  <label><input type="checkbox"> Grow a farm</label><br>
+  <label><input type="checkbox"> Make a cake</label><br>
+  <label><input type="checkbox"> Eat some food</label><br>
+  <label><input type="checkbox"> Use a bed</label><br>
+  <label><input type="checkbox"> Mine obsidian</label><br>
+  <label><input type="checkbox"> Mine gold</label><br>
+  <label><input type="checkbox"> Mine diamonds</label><br>
+  <label><input type="checkbox"> Make portal stone</label><br>
+  <label><input type="checkbox"> Travel to the nether</label><br>
+  <label><input type="checkbox"> Open a door with wiring</label><br>
+  <label><input type="checkbox"> Fire a bow</label><br>
+  <label><input type="checkbox"> Teleport with enderpearl</label><br>
+  <label><input type="checkbox"> Unlock the ender portal</label><br>
+  <label><input type="checkbox"> Slay the ender dragon</label><br>
+  <label><input type="checkbox"> Slay a slime</label><br>
+  <label><input type="checkbox"> Slay a magma cube</label><br>
+  <label><input type="checkbox"> Fish a fish</label><br>
+  <label><input type="checkbox"> Use an anvil</label><br>
+  <label><input type="checkbox"> Slay a zombie pigman</label><br>
+  <label><input type="checkbox"> Slay a ghast by its fireball</label><br>
+  <label><input type="checkbox"> Brew a potion</label><br>
+  <label><input type="checkbox"> Breed two animals</label><br>
+  <label><input type="checkbox"> Enchant an item</label><br>
+  <button onclick="toggleAchievements(true)">Unlock All</button>
+  <button onclick="toggleAchievements(false)">Reset All</button>
+ </div>
+ <script src="scripts/ui-handler.js"></script>
+ <script src="scripts/mbwom.js"></script>
+ <script src="scripts/mbw-algorithm.js"></script>
+ <script src="scripts/input.js"></script>
+ <script src="scripts/file-manager.js"></script>
+ <script src="scripts/textures.js"></script>
+ <script src="scripts/rendering.js"></script>
  <script src="main.js"></script>
+ <script src="scripts/tools.js"></script>
 </body>
 
 </html>
