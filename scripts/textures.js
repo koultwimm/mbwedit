@@ -427,6 +427,26 @@ const texturesMap = {
   x: 0,
   y: 179
  },
+ fice: {
+  x: 0,
+  y: 180
+ },
+ fice_1: {
+  x: 1,
+  y: 180
+ },
+ fice_2: {
+  x: 2,
+  y: 180
+ },
+ fice_3: {
+  x: 3,
+  y: 180
+ },
+ fice_4: {
+  x: 4,
+  y: 180
+ },
  gd: {
   x: 0,
   y: 9
