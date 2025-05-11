@@ -1151,7 +1151,7 @@ const texturesMap = {
   x: 1,
   y: 33
  },
- cauldron_0: {
+ cauldron: {
   x: 0,
   y: 33
  },
@@ -1331,7 +1331,7 @@ const texturesMap = {
   x: 0,
   y: 78
  },
- dr1_1: {
+ dr1: {
   x: 0,
   y: 83
  },
@@ -1355,7 +1355,7 @@ const texturesMap = {
   x: 0,
   y: 80
  },
- idr1_1: {
+ idr1: {
   x: 0,
   y: 85
  },
@@ -1379,7 +1379,7 @@ const texturesMap = {
   x: 0,
   y: 82
  },
- bdr1_1: {
+ bdr1: {
   x: 0,
   y: 87
  },
